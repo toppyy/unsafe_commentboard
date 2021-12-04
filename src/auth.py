@@ -1,14 +1,20 @@
 from .models import User
 from .models import AccessToken
 
+import hashlib
+
+SECRET = 'averybigsecret'
+
+
+def md5(string):
+    return hashlib.md5(string.encode('UTF-8')).hexdigest()
+
 def hash_pw(password):
-    # Placeholder waiting for implementation
-    return '+1' + password
+    return md5(password)
 
 
 def create_token(username,password):
-    # Placeholder waiting for implementation
-    return username+'_'+password
+    return md5(username+'_'+password)
 
 
 def authenticate_request_username_pw(request):
