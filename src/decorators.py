@@ -16,11 +16,16 @@ def login_required(viewfunction):
         authenticated           = authenticate_request_username_pw(request)
         authenticated_cookie    = authenticate_request_by_cookie(request)
 
-        print('auth',authenticated,authenticated_cookie)
+        
 
         if authenticated is not None or authenticated_cookie is not None:
 
-          return viewfunction(*args)
+          token = authenticated
+          if token is None:
+            token = authenticated_cookie
+
+        
+          return viewfunction(request,token)
 
         return redirect('/login') 
 

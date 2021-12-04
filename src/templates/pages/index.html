@@ -10,12 +10,15 @@
         <table>
             <tr>
                 <th style="text-align:left">Comment</th>
+                <th style="text-align:right">User</th>
                 <th style="text-align:right">Published</th>
             </tr>
 			{% for comment in comments %}
 			<tr>
 				<td style="text-align:left">{{comment.comment_text}}</td>
-				<td style="text-align:right">{{comment.pub_date}}</td>
+				<td style="text-align:right">{{comment.by}}</td>
+                <td style="text-align:right">{{comment.pub_date}}</td>
+                
 			</tr>	
 			{% endfor %}
         </table>

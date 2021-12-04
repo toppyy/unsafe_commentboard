@@ -14,15 +14,16 @@ from .auth import create_token
 
 from .decorators import login_required
 
+from .misc import get_date
 
 @csrf_exempt
 @login_required
-def index(request):
+def index(request,token):
 
     if request.method == 'POST':
         comment_text    = request.POST.get('comment_text')
-        pub_date        = request.POST.get('pub_date')
-        new_comment     = Comment.objects.create(comment_text=comment_text,pub_date=pub_date)
+        pub_date        = get_date()
+        new_comment     = Comment.objects.create(comment_text=comment_text,pub_date=pub_date,by=token.user.username)
         new_comment.save()
 
     

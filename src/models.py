@@ -11,7 +11,7 @@ class User(models.Model):
 class Comment(models.Model):
     comment_text = models.TextField()
     pub_date = models.DateField('date published')
-    by = models.ForeignKey(User, on_delete=models.CASCADE)
+    by = models.TextField()
 
 
 class AccessToken(models.Model):
