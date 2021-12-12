@@ -16,7 +16,7 @@ from .decorators import login_required
 
 from .misc import get_date
 
-@csrf_exempt
+
 @login_required
 def index(request,token):
 

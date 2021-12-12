@@ -23,8 +23,7 @@ def authenticate_request_username_pw(request):
         username    = request.POST.get('username')
         password    = request.POST.get('password')
     else:
-        username    = request.GET.get('username')
-        password    = request.GET.get('password')
+        return None
 
     if password is None or username is None:
         return None
