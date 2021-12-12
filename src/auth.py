@@ -6,15 +6,15 @@ import hashlib
 SECRET = 'averybigsecret'
 
 
-def md5(string):
+def hash(string):
     return hashlib.md5(string.encode('UTF-8')).hexdigest()
 
 def hash_pw(password):
-    return md5(password)
+    return hash(SECRET+password)
 
 
 def create_token(username,password):
-    return md5(username+'_'+password)
+    return hash(username+SECRET+password)
 
 
 def authenticate_request_username_pw(request):
