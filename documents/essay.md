@@ -12,7 +12,10 @@ Start app:
     python3 manage.py runserver
 
 
+
 # Flaws
+
+All flaws are from the OWASP Top Ten 2021 -list.
 
 ## Flaw 1: A03 Injection
 
@@ -46,7 +49,22 @@ Also, the application does not salt the passwords (see issue [CWE-759: Use of a 
 Also, the secret key used for peppering is stored in the source code and not in a key vault.
 
 
+## Flaw 3: A07 Identification and Authentication Failures
+  
+The app has two distinct flaws under this category:
 
+- [CWE-521: Weak password requirements](https://cwe.mitre.org/data/definitions/521.html)
+- [CWE-613: Insufficient Session Expiration](https://cwe.mitre.org/data/definitions/613.html)
 
+The app has no restrictions regarding usernames and passwords (see lines https://github.com/toppyy/unsafe_commentboard/blob/master/src/views.py#L39-L42 ). A password/username can be of any length or content, for example "username" and "password" are valid as credentials. As there are no restrictions, this is also an injection point. 
+
+Having no restrictions on passwords/usernames creates a situation where a user is can use a password that's very common or not sufficiently long. This makes it easier to crack passwords by brute forcing, rainbow table password cracking etc. 
+
+To mitigate the issue, one could enforce restrictions on credentials like to following: minimum and maximum length, no reuse, no common passwords, password must include mixed character sets, passwords expire etc.
+
+The app uses a access token stored as a cookie for session control (= check if user is already logged in): 
+https://github.com/toppyy/unsafe_commentboard/blob/master/src/views.py#L65
+
+The cookie or the token (stored in the db) have no expiration dates and so a valid token can be used to log in forever. 
 
 
