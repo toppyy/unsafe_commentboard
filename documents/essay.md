@@ -11,8 +11,6 @@ Start app:
 
     python3 manage.py runserver
 
-
-
 # Flaws
 
 All flaws are from the OWASP Top Ten 2021 -list.
@@ -46,9 +44,6 @@ To mitigate the issue, passwords should be hashed using a different hashing func
 
 Also, the application does not salt the passwords (see issue [CWE-759: Use of a One-Way Hash without a Salt](https://cwe.mitre.org/data/definitions/759.html)). While peppering creates additional security, it is not a replacement for salting. To mitigate this, the application should create a salt for each stored password and store it along the password. 
 
-Also, the secret key used for peppering is stored in the source code and not in a key vault.
-
-
 ## Flaw 3: A07 Identification and Authentication Failures
   
 The app has two distinct flaws under this category:
@@ -65,6 +60,34 @@ To mitigate the issue, one could enforce restrictions on credentials like to fol
 The app uses a access token stored as a cookie for session control (= check if user is already logged in): 
 https://github.com/toppyy/unsafe_commentboard/blob/master/src/views.py#L65
 
-The cookie or the token (stored in the db) have no expiration dates and so a valid token can be used to log in forever. 
+The cookie or the token (stored in the db) have no expiration dates and so a valid token can be used to log in forever. To mitigate this issue, one could use Django's session control and enforce a expiration for the session. Doing this would help to prevent attacks that originate from using shared computers (for example).
+
+## Flaw 4: A01 Broken Access Control
+
+The first flaw under this category is [CWE-1275 Sensitive Cookie with Improper SameSite Attribute](https://cwe.mitre.org/data/definitions/1275.html). The app uses a cookie to store login credentials:
+https://github.com/toppyy/unsafe_commentboard/blob/master/src/views.py#L65
+
+The cookie-attribute *SameSite* is not set. This means that cookies are sent for all requests (not for only same-site requests). While this does not expose the app for CSRF-attacks, it does the increases the risk for them. To mitigate the issue, one should the attribute to 'Strict' or 'Lax'.
+
+The second flaw is [CWE-540 Inclusion of Sensitive Information in Source Code](https://cwe.mitre.org/data/definitions/540.html). The app includes the secret key used for peppering is stored in the source code:
+https://github.com/toppyy/unsafe_commentboard/blob/master/src/auth.py#L6
+
+If an attacker were to obtain the source code, password cracking would become much easier as they could pepper a list of common passwords and try access with them.
+
+To remove said flaw, OWASP recommends storing the secret in a keyvault or Hardware Security Module (HSM)
+
+## Flaw 5: A05 Security Misconfiguration
+
+The app displays the flaw [CWE-756 Missing Custom Error Page](https://cwe.mitre.org/data/definitions/756.html). If the app runs into an error, it will show the default Django error page. This reveals information to a possible attacker, starting from the fact the app uses Django and what path's are searched upon requests. 
+
+This is due to the fact that the app is configured to run in DEBUG-mode:
+https://github.com/toppyy/unsafe_commentboard/blob/master/config/settings.py#L26
+
+To correct for the error, one should not run in DEBUG-mode in production (turn it to *false*) and implement a catch-all error page and specific error-pages for specific errors (like 404) if needed.
+
+
+
+
+
 
 

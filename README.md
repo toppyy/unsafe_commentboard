@@ -15,6 +15,7 @@ A web application that has (at least) the following security flaws:
     - CWE-613: Insufficient Session Expiration
 - Broken access control
     - CWE-1275 Sensitive Cookie with Improper SameSite Attribute
+    - CWE-540: Inclusion of Sensitive Information in Source Code
 - Security misconfiguration
     - CWE-756: Missing Custom Error Page
 
